@@ -1,0 +1,291 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard with AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffb6c1; /* Baby pink */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            width: 800px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ff69b4; /* Baby pink */
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #9370db; /* Light purple */
+        }
+        .exam-timetable, .todo-list {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .exam-timetable table, .todo-list ul {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .exam-timetable table th, .exam-timetable table td, .todo-list ul li {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        .notes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .note {
+            width: 150px;
+            height: 150px;
+            padding: 10px;
+            border-radius: 10px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .note.programming {
+            background-color: #ff69b4; /* Baby pink */
+        }
+        .note.networking {
+            background-color: #9370db; /* Light purple */
+        }
+        .note.database {
+            background-color: #ff9f5a;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #ff69b4; /* Baby pink */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .quiz-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        .quiz-popup h2 {
+            margin-top: 0;
+        }
+        .quiz-popup .question {
+            margin-bottom: 10px;
+        }
+        .quiz-popup .options {
+            margin-bottom: 20px;
+        }
+        .quiz-popup .options label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .quiz-popup .close-button {
+            background-color: #ccc;
+            color: black;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+        .ai-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .ai-section input {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">Student Dashboard with AI</div>
+        
+        <div class="section exam-timetable">
+            <h2>Exam Timetable</h2>
+            <table>
+                <tr>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Venue</th>
+                </tr>
+                <tr>
+                    <td>Programming</td>
+                    <td>2023-12-01</td>
+                    <td>10:00 AM</td>
+                    <td>Room 201</td>
+                </tr>
+                <tr>
+                    <td>Networking</td>
+                    <td>2023-12-02</td>
+                    <td>10:00 AM</td>
+                    <td>Room 202</td>
+                </tr>
+                <tr>
+                    <td>Database Systems</td>
+                    <td>2023-12-03</td>
+                    <td>10:00 AM</td>
+                    <td>Room 203</td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="section notes">
+            <h2>Notes</h2>
+            <div class="note programming">Programming: Study chapters 1 to 5</div>
+            <div class="note networking">Networking: Review lab experiments</div>
+            <div class="note database">Database: Read about SQL queries</div>
+        </div>
+        
+        <div class="section todo-list">
+            <h2>To-Do List</h2>
+            <ul>
+                <li>Complete programming assignment</li>
+                <li>Prepare networking project</li>
+                <li>Write database report</li>
+            </ul>
+        </div>
+        
+        <button class="button" onclick="showQuiz()">Take a Quiz</button>
+        
+        <div class="ai-section">
+            <h2>AI Prediction</h2>
+            <input type="number" id="studyHours" placeholder="Enter study hours">
+            <button class="button" onclick="predictPass()">Predict Pass</button>
+            <div id="aiResult"></div>
+        </div>
+    </div>
+    
+    <div class="quiz-popup" id="quizPopup">
+        <h2>Quiz</h2>
+        <div class="question">1. What is the output of the following code: `print(2**3)`?</div>
+        <div class="options">
+            <label><input type="radio" name="quiz1" value="8"> 8</label>
+            <label><input type="radio" name="quiz1" value="6"> 6</label>
+            <label><input type="radio" name="quiz1" value="9"> 9</label>
+            <label><input type="radio" name="quiz1" value="5"> 5</label>
+        </div>
+        <div class="question">2. Which protocol is used to send emails?</div>
+        <div class="options">
+            <label><input type="radio" name="quiz2" value="SMTP"> SMTP</label>
+            <label><input type="radio" name="quiz2" value="HTTP"> HTTP</label>
+            <label><input type="radio" name="quiz2" value="FTP"> FTP</label>
+            <label><input type="radio" name="quiz2" value="IMAP"> IMAP</label>
+        </div>
+        <div class="question">3. What does SQL stand for?</div>
+        <div class="options">
+            <label><input type="radio" name="quiz3" value="Structured Query Language"> Structured Query Language</label>
+            <label><input type="radio" name="quiz3" value="Simple Query Language"> Simple Query Language</label>
+            <label><input type="radio" name="quiz3" value="Structured Question Language"> Structured Question Language</label>
+            <label><input type="radio" name="quiz3" value="Simple Question Language"> Simple Question Language</label>
+        </div>
+        <div class="question">4. Which of the following is a loop structure in Python?</div>
+        <div class="options">
+            <label><input type="radio" name="quiz4" value="for"> for</label>
+            <label><input type="radio" name="quiz4" value="while"> while</label>
+            <label><input type="radio" name="quiz4" value="both"> both</label>
+            <label><input type="radio" name="quiz4" value="none"> none</label>
+        </div>
+        <div class="question">5. What is the default port for HTTP?</div>
+        <div class="options">
+            <label><input type="radio" name="quiz5" value="80"> 80</label>
+            <label><input type="radio" name="quiz5" value="443"> 443</label>
+            <label><input type="radio" name="quiz5" value="21"> 21</label>
+            <label><input type="radio" name="quiz5" value="25"> 25</label>
+        </div>
+        <button class="button" onclick="submitQuiz()">Submit</button>
+        <button class="button close-button" onclick="closeQuiz()">Close</button>
+    </div>
+    
+    <div class="overlay" id="overlay"></div>
+    
+    <script>
+        function showQuiz() {
+            document.getElementById('quizPopup').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+        }
+        
+        function closeQuiz() {
+            document.getElementById('quizPopup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+        
+        function submitQuiz() {
+            const answers = {
+                quiz1: '8',
+                quiz2: 'SMTP',
+                quiz3: 'Structured Query Language',
+                quiz4: 'both',
+                quiz5: '80'
+            };
+            let score = 0;
+            for (const [key, value] of Object.entries(answers)) {
+                const options = document.getElementsByName(key);
+                for (const option of options) {
+                    if (option.checked && option.value === value) {
+                        score++;
+                    }
+                }
+            }
+            alert(`You scored ${score} out of 5`);
+            closeQuiz();
+        }
+        
+        function predictPass() {
+            const studyHours = document.getElementById('studyHours').value;
+            if (!studyHours) {
+                alert('Please enter the number of study hours.');
+                return;
+            }
+            
+            // Simple AI prediction logic
+            const passProbability = Math.min(100, studyHours * 10);
+            const resultDiv = document.getElementById('aiResult');
+            resultDiv.textContent = `Probability of passing: ${passProbability}%`;
+        }
+    </script>
+</body>
+</html>
